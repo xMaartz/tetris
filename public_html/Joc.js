@@ -35,7 +35,7 @@ var juego = {
     piezaActual: null,
     piezaSig: null,
     contPieza: [],
-    intervalo: 1000, 
+    intervalo: 0, 
             
     inicializar: function () {
         
@@ -50,8 +50,10 @@ var juego = {
         juego.puntuacion = 0;
         juego.puntuacionMax = 0;
         juego.nivel = 1;
-        juego.piezaActual = null;
-        juego.piezaSig = null;
+        var forma = juego.generaPieza();
+        juego.piezaActual = new Pieza(forma[0],forma[1],4,1);
+        forma = juego.generaPieza();
+        juego.piezaSig = new Pieza(forma[0],forma[1],4,1);
         juego.contPieza = new Array ();
             juego.contPieza["i"] = 0;
             juego.contPieza["j"] = 0;
@@ -83,12 +85,25 @@ var juego = {
 
         juego.resetEspacio();
         
-        //prueba
+        /*prueba con pieza*/
+        
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+                if (juego.piezaActual.forma[i][j] == 1) {
+                    juego.espacio[juego.piezaActual.y+i][juego.piezaActual.x+j] = "x";
+                }
+            }
+        }
+        if (juego.piezaActual.y < 20) {
+        juego.piezaActual.y += 1;
+        }
+
+        /*prueba
         juego.espacio[prueba["y"]][prueba["x"]] = "x";
         if (prueba["y"] < 23){
         prueba["y"] += 1;
-        }
-
+        }*/
+       
         for ( var i = 0; i < juego.espacio.length; i++) {
 
                         tabla=tabla+"<br />";
@@ -112,7 +127,16 @@ var juego = {
     },
     
     generaPieza: function () {
-        
+        var piezas = [
+                 [[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],"groc"],
+                 [[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]],"lila"],
+                 [[[0,0,0,0],[0,1,1,0],[1,1,0,0],[0,0,0,0]],"verd"],
+                 [[[0,0,0,0],[0,1,1,0],[0,0,1,1],[0,0,0,0]],"roig"],
+                 [[[0,1,0,0],[0,1,0,0],[0,1,1,0],[0,0,0,0]],"blau"],
+                 [[[0,1,1,0],[0,1,0,0],[0,1,0,0],[0,0,0,0]],"taronga"],
+                 [[[0,0,0,0],[1,1,1,0],[0,1,0,0],[0,0,0,0]],"morat"] ];
+           var numeroAleatori = Math.round(Math.random()*6);                      
+           return piezas[numeroAleatori]; 
     },
     
     movPieza: function () {
@@ -130,5 +154,26 @@ var juego = {
 prueba = new Array();
 prueba["y"] = 1;
 prueba["x"] = 7;
+
+var Pieza = function(forma, color, x, y) { 
+        this.forma = forma;
+        this.color = color;
+        this.x = x;  
+        this.y = y;
+};
+        
+    Pieza.prototype.movDer = function()
+         { if ((x-1)>0) { x--;
+                          return true;
+                          }
+           else { return false; }
+           };
+           
+    Pieza.prototype.movIzq = function()
+     { if ((x+1)<14) { x++;
+                       return true;
+                       }
+       else { return false; }
+       };           
 
 
