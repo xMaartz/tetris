@@ -1,3 +1,4 @@
+// Objeto Juego
 
 var juego = {
     
@@ -82,6 +83,7 @@ var juego = {
     imprimirEspacio: function () {
     
         var tabla = "";
+        var piezaSig = "";
 
         juego.resetEspacio();
         
@@ -94,15 +96,10 @@ var juego = {
                 }
             }
         }
-        if (juego.piezaActual.y < 20) {
-        juego.piezaActual.y += 1;
-        }
-
-        /*prueba
-        juego.espacio[prueba["y"]][prueba["x"]] = "x";
-        if (prueba["y"] < 23){
-        prueba["y"] += 1;
-        }*/
+        
+        if (juego.espacio[juego.piezaActual.y+4][juego.piezaActual.x] == 0) {
+            juego.piezaActual.y += 1;
+        };
        
         for ( var i = 0; i < juego.espacio.length; i++) {
 
@@ -119,6 +116,15 @@ var juego = {
         document.getElementById("puntMax").innerHTML = "Récord: "+juego.puntuacionMax;
         document.getElementById("nivel").innerHTML = "Nivel: "+juego.nivel;
         document.getElementById("tabla").innerHTML = tabla;
+        
+        for (var i = 0; i < 4; i++) {
+                piezaSig = piezaSig+"<br />";
+            for (var j = 0; j < 4; j++) {
+                    piezaSig = piezaSig+juego.piezaSig.forma[i][j]+" ";
+            }
+        }
+        
+        document.getElementById("piezaSig").innerHTML = piezaSig;
         
         
         
@@ -151,9 +157,7 @@ var juego = {
             
 };
 
-prueba = new Array();
-prueba["y"] = 1;
-prueba["x"] = 7;
+// Objeto Pieza
 
 var Pieza = function(forma, color, x, y) { 
         this.forma = forma;
@@ -162,18 +166,59 @@ var Pieza = function(forma, color, x, y) {
         this.y = y;
 };
         
-    Pieza.prototype.movDer = function()
-         { if ((x-1)>0) { x--;
-                          return true;
-                          }
-           else { return false; }
-           };
+    Pieza.prototype.movDer = function() { 
+        if ((x-1)>0) { 
+            x--;
+            return true;
+        } else { 
+            return false; 
+        }
+    };
            
-    Pieza.prototype.movIzq = function()
-     { if ((x+1)<14) { x++;
-                       return true;
-                       }
-       else { return false; }
-       };           
+    Pieza.prototype.movIzq = function() {
+        if ((x+1)<9) { 
+            x++;
+            return true;
+        } else { 
+            return false; 
+        }
+    };
+    
+    Pieza.prototype.movAbj = function() {
+        if ((y+1)<24) { 
+            y++;
+            return true;
+        } else { 
+            return false; 
+        }
+    };
+       
+    Pieza.prototype.rotarDer = function () {
+        var formaNova = new Array();
+        for (var i=0;i<this.forma.length;i++) {
+            formaNova[i]=new Array();
+            for (var j=0;j<this.forma[i].length;j++) {
+                formaNova[i][j]=this.forma[this.forma[i].length-1-j][i];
+            }
+        }
+        this.forma = formaNova;
+    };
+    
+    Pieza.prototype.rotarIzq = function () {
+        for (var x=0;x<3;x++) {
+            var formaNova = new Array();
+            for (var i=0;i<this.forma.length;i++) {
+                formaNova[i]=new Array();
+                for (var j=0;j<this.forma[i].length;j++) {
+                    formaNova[i][j]=this.forma[this.forma[i].length-1-j][i];
+                }
+            }
+            this.forma = formaNova;
+        }
+    };
+    
+    Pieza.prototype.formaIni = function () {
+        
+    };
 
 
