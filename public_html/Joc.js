@@ -2,33 +2,8 @@
 
 var juego = {
     
-    espacio: [  [1,1,1,1,1,1,1,1,1,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,0,0,0,0,0,0,0,0,1],
-                [1,1,1,1,1,1,1,1,1,1]
-             ],
-    
+    espacio: new Array(25),
+    espacio2: new Array(25),
     estadoEspacio: null,
     puntuacion: 0,
     puntuacionMax: 0,
@@ -41,10 +16,26 @@ var juego = {
     inicializar: function () {
         
         for (var i = 0; i < juego.espacio.length; i++) {
+            juego.espacio[i] = new Array(10);
+        }
+        
+        for (var i = 0; i < juego.espacio.length; i++) {
             if (i === 0 || i === 24) {
-                juego.espacio[i] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                juego.espacio[i] = [1,1,1,1,1,1,1,1,1,1];
             } else {
-                juego.espacio[i] = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+                juego.espacio[i] = [1,0,0,0,0,0,0,0,0,1];
+            }
+        }
+        
+        for (var i = 0; i < juego.espacio2.length; i++) {
+            juego.espacio2[i] = new Array(10);
+        }
+        
+        for (var i = 0; i < juego.espacio2.length; i++) {
+            if (i === 0 || i === 24) {
+                juego.espacio2[i] = [1,1,1,1,1,1,1,1,1,1];
+            } else {
+                juego.espacio2[i] = [1,0,0,0,0,0,0,0,0,1];
             }
         }
         
@@ -72,9 +63,9 @@ var juego = {
         
         for (var i = 0; i < juego.espacio.length; i++) {
             if (i === 0 || i === 24) {
-                juego.espacio[i] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                juego.espacio[i] = [1,1,1,1,1,1,1,1,1,1];
             } else {
-                juego.espacio[i] = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+                juego.espacio[i] = [1,0,0,0,0,0,0,0,0,1];
             }
         }
         
@@ -84,8 +75,18 @@ var juego = {
     
         var tabla = "";
         var piezaSig = "";
+        
 
         juego.resetEspacio();
+        
+        // rellena espacio 2
+        for (var i = 0; i < juego.espacio2.length; i++) {
+            for (var j = 0; j < juego.espacio2[i].length; j++) {
+
+                            juego.espacio[i][j] = juego.espacio2[i][j];
+
+                        }
+        }
         
         /*prueba con pieza*/
         
@@ -99,7 +100,30 @@ var juego = {
         
         if (juego.espacio[juego.piezaActual.y+4][juego.piezaActual.x] == 0) {
             juego.piezaActual.y += 1;
-        };
+        } else {
+            var forma = juego.generaPieza();
+            juego.piezaActual = new Pieza(forma[0],forma[1],4,1);
+            
+            for (var i = 0; i < juego.espacio.length; i++) {
+                for (var j = 0; j < juego.espacio[i].length; j++) {
+
+                                juego.espacio2[i][j] = juego.espacio[i][j];
+
+                            }
+            }
+            
+            for (var i = 0; i < juego.espacio2.length; i++) {
+                for (var j = 0; j < juego.espacio2[i].length; j++) {
+
+                                if (juego.espacio2[i][j] == "x") {
+                                    juego.espacio2[i][j] = 1;
+                                }
+
+                            }
+            }
+            
+        }
+            
        
         for ( var i = 0; i < juego.espacio.length; i++) {
 
@@ -125,8 +149,6 @@ var juego = {
         }
         
         document.getElementById("piezaSig").innerHTML = piezaSig;
-        
-        
         
         juego.puntuacion = juego.puntuacion + 1;
 
