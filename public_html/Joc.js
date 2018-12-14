@@ -43,9 +43,9 @@ var juego = {
         juego.puntuacionMax = 0;
         juego.nivel = 1;
         var forma = juego.generaPieza();
-        juego.piezaActual = new Pieza(forma[0],forma[1],4,1);
+        juego.piezaActual = new Pieza(forma[0],forma[1],3,1);
         forma = juego.generaPieza();
-        juego.piezaSig = new Pieza(forma[0],forma[1],4,1);
+        juego.piezaSig = new Pieza(forma[0],forma[1],3,1);
         juego.contPieza = new Array ();
             juego.contPieza["i"] = 0;
             juego.contPieza["j"] = 0;
@@ -54,7 +54,7 @@ var juego = {
             juego.contPieza["s"] = 0;
             juego.contPieza["t"] = 0;
             juego.contPieza["z"] = 0;
-        juego.intervalo = 1000;
+        juego.intervalo = 200;
         
         
     },
@@ -88,21 +88,36 @@ var juego = {
                         }
         }
         
-        /*prueba con pieza*/
+        // Imprime pieza en espacio 1
         
         for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 4; j++) {
-                if (juego.piezaActual.forma[i][j] == 1) {
+                if (juego.piezaActual.forma[i][j] === 1) {
                     juego.espacio[juego.piezaActual.y+i][juego.piezaActual.x+j] = "x";
                 }
             }
         }
         
-        if (juego.espacio[juego.piezaActual.y+4][juego.piezaActual.x] == 0) {
+        // Bajar pieza
+        var fin = false;
+        for (var i = 3; i >= 0 && fin === false; i--) {
+            for (var j = 0; j < 4 && fin === false; j++) {
+                if (juego.piezaActual.forma[i][j] === 1) {
+                    if (juego.espacio[juego.piezaActual.y+i+1][juego.piezaActual.x+j] === 1) {
+                        fin === true;
+                    }
+                }
+            }
+        }
+        
+        if (fin === false) {
             juego.piezaActual.y += 1;
+            
+        // Si no puede bajar más    
         } else {
+            juego.piezaActual = juego.piezaSig;
             var forma = juego.generaPieza();
-            juego.piezaActual = new Pieza(forma[0],forma[1],4,1);
+            juego.piezaSig = new Pieza(forma[0],forma[1],3,1);
             
             for (var i = 0; i < juego.espacio.length; i++) {
                 for (var j = 0; j < juego.espacio[i].length; j++) {
@@ -115,7 +130,7 @@ var juego = {
             for (var i = 0; i < juego.espacio2.length; i++) {
                 for (var j = 0; j < juego.espacio2[i].length; j++) {
 
-                                if (juego.espacio2[i][j] == "x") {
+                                if (juego.espacio2[i][j] === "x") {
                                     juego.espacio2[i][j] = 1;
                                 }
 
@@ -124,7 +139,7 @@ var juego = {
             
         }
             
-       
+        // imprimir tabla y puntuaciones
         for ( var i = 0; i < juego.espacio.length; i++) {
 
                         tabla=tabla+"<br />";
