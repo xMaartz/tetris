@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8"/>
         <title>A L B E R T</title>
-        <script type="text/javascript" src="Joc.js"></script>
+        <script type="text/javascript" src="Joc.js"/></script>
     </head>
-    <body>
+    <body id="teclado">
         <noscript>
             <p>Aquesta pàgina no suporta JavaScript</p>
         </noscript>
@@ -23,4 +24,8 @@
         <p style="font-family: Courier" id="piezaSig" ></p>
         
     </body>
+    <script type="text/javascript">
+        var element = document.getElementById("teclado");
+        element.addEventListener("keydown",juego.movPieza);
+    </script>
 </html>

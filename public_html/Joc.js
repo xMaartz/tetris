@@ -42,10 +42,10 @@ var juego = {
         juego.puntuacion = 0;
         juego.puntuacionMax = 0;
         juego.nivel = 1;
-        var forma = juego.generaPieza();
-        juego.piezaActual = new Pieza(forma[0],forma[1],3,1);
-        forma = juego.generaPieza();
-        juego.piezaSig = new Pieza(forma[0],forma[1],3,1);
+        var formaN = juego.generaPieza();
+        juego.piezaActual = new Pieza(formaN[0],formaN[1],3,1);
+        formaN = juego.generaPieza();
+        juego.piezaSig = new Pieza(formaN[0],formaN[1],3,1);
         juego.contPieza = new Array ();
             juego.contPieza["i"] = 0;
             juego.contPieza["j"] = 0;
@@ -104,20 +104,20 @@ var juego = {
             for (var j = 0; j < 4 && fin === false; j++) {
                 if (juego.piezaActual.forma[i][j] === 1) {
                     if (juego.espacio[juego.piezaActual.y+i+1][juego.piezaActual.x+j] === 1) {
-                        fin === true;
+                        fin = true;
                     }
                 }
             }
         }
         
         if (fin === false) {
-            juego.piezaActual.y += 1;
+            juego.piezaActual.y++;
             
         // Si no puede bajar más    
         } else {
             juego.piezaActual = juego.piezaSig;
-            var forma = juego.generaPieza();
-            juego.piezaSig = new Pieza(forma[0],forma[1],3,1);
+            var formaN = juego.generaPieza();
+            juego.piezaSig = new Pieza(formaN[0],formaN[1],3,1);
             
             for (var i = 0; i < juego.espacio.length; i++) {
                 for (var j = 0; j < juego.espacio[i].length; j++) {
@@ -182,7 +182,16 @@ var juego = {
            return piezas[numeroAleatori]; 
     },
     
-    movPieza: function () {
+    movPieza: function (tecla) {
+        
+        switch (tecla.key) {
+            case "ArrowLeft": {
+                    juego.piezaActual.movIzq();
+            } break;
+            case "ArrowRight": {
+                    juego.PiezaActual.movDer();
+            } break;
+        } 
         
     },
     
@@ -204,8 +213,8 @@ var Pieza = function(forma, color, x, y) {
 };
         
     Pieza.prototype.movDer = function() { 
-        if ((x-1)>0) { 
-            x--;
+        if ((this.x+1)<9) { 
+            this.x++;
             return true;
         } else { 
             return false; 
@@ -213,8 +222,8 @@ var Pieza = function(forma, color, x, y) {
     };
            
     Pieza.prototype.movIzq = function() {
-        if ((x+1)<9) { 
-            x++;
+        if ((this.x-1)>0) { 
+            this.x--;
             return true;
         } else { 
             return false; 
