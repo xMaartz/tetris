@@ -7,6 +7,7 @@ var juego = {
     estadoEspacio: null,
     puntuacion: 0,
     puntuacionMax: 0,
+    contador: 0,
     nivel: 0,
     piezaActual: null,
     piezaSig: null,
@@ -41,6 +42,7 @@ var juego = {
         
         juego.puntuacion = 0;
         juego.puntuacionMax = 0;
+        juego.contador = 0;
         juego.nivel = 1;
         var formaN = juego.generaPieza();
         juego.piezaActual = new Pieza(formaN[0],formaN[1],3,1);
@@ -54,7 +56,7 @@ var juego = {
             juego.contPieza["s"] = 0;
             juego.contPieza["t"] = 0;
             juego.contPieza["z"] = 0;
-        juego.intervalo = 200;
+        juego.intervalo = 500;
         
         
     },
@@ -119,6 +121,8 @@ var juego = {
             var formaN = juego.generaPieza();
             juego.piezaSig = new Pieza(formaN[0],formaN[1],3,1);
             
+            juego.filas();
+            
             for (var i = 0; i < juego.espacio.length; i++) {
                 for (var j = 0; j < juego.espacio[i].length; j++) {
 
@@ -135,6 +139,12 @@ var juego = {
                                 }
 
                             }
+            }
+            
+            juego.contador++;
+            
+            if (juego.contador % 10 === 0) {
+                juego.nivel++;
             }
             
         }
@@ -164,8 +174,6 @@ var juego = {
         }
         
         document.getElementById("piezaSig").innerHTML = piezaSig;
-        
-        juego.puntuacion = juego.puntuacion + 1;
 
     },
     
@@ -186,10 +194,22 @@ var juego = {
         
         switch (tecla.key) {
             case "ArrowLeft": {
-                    juego.piezaActual.movIzq();
+                    if (juego.piezaActual.movIzq() === true) {
+                        juego.piezaActual.x--;
+                    }
             } break;
             case "ArrowRight": {
-                    juego.PiezaActual.movDer();
+                    if (juego.piezaActual.movDer() === true) {
+                        juego.piezaActual.x++;
+                    }
+            } break;
+            case "ArrowUp": {
+                    juego.piezaActual.rotarDer();
+            } break;
+            case "ArrowDown": {
+                    if (juego.piezaActual.movAbj() === true) {
+                        juego.piezaActual.y++;
+                    }
             } break;
         } 
         
@@ -198,6 +218,26 @@ var juego = {
     movimiento: function () {
         juego.inicializar();
         inter = setInterval(juego.imprimirEspacio, juego.intervalo);
+    },
+    
+    filas: function () {
+        var cont = 0;
+        for (var i = 0; i < juego.espacio.length-2; i++) {
+            for (var j = 0; j < juego.espacio[i].length; j++) {
+                if (juego.espacio[i][j] === 1) {
+                    cont++;
+                }
+            }
+            
+            if (cont === 10) {
+                for (var p = i; p > 0; p--) {
+                    for (var r = 0; r < 9; r++) {
+                        juego.espacio[p][r] = juego.espacio[p-1][r];
+                    }
+                }
+                i++;
+            }
+        }
     }
     
             
@@ -210,36 +250,48 @@ var Pieza = function(forma, color, x, y) {
         this.color = color;
         this.x = x;  
         this.y = y;
-};
+
         
-    Pieza.prototype.movDer = function() { 
-        if ((this.x+1)<9) { 
-            this.x++;
+        this.movDer = function() { 
+            for (var i = 3; i >= 0; i--) {
+                for (var j = 0; j < 4; j++) {
+                    if (juego.piezaActual.forma[i][j] === 1) {
+                        if (juego.espacio[juego.piezaActual.y+i][juego.piezaActual.x+j+1] === 1) {
+                            return false;
+                        }
+                    }
+                }
+            }
             return true;
-        } else { 
-            return false; 
-        }
-    };
+        };
            
-    Pieza.prototype.movIzq = function() {
-        if ((this.x-1)>0) { 
-            this.x--;
+        this.movIzq = function() {
+            for (var i = 3; i >= 0; i--) {
+                for (var j = 0; j < 4; j++) {
+                    if (juego.piezaActual.forma[i][j] === 1) {
+                        if (juego.espacio[juego.piezaActual.y+i][juego.piezaActual.x+j-1] === 1) {
+                            return false;
+                        }
+                    }
+                }
+            }
             return true;
-        } else { 
-            return false; 
-        }
-    };
+        };
     
-    Pieza.prototype.movAbj = function() {
-        if ((y+1)<24) { 
-            y++;
-            return true;
-        } else { 
-            return false; 
+    this.movAbj = function() {
+        for (var i = 3; i >= 0; i--) {
+            for (var j = 0; j < 4; j++) {
+                if (juego.piezaActual.forma[i][j] === 1) {
+                    if (juego.espacio[juego.piezaActual.y+i+1][juego.piezaActual.x+j] === 1) {
+                        return false;
+                    }
+                }
+            }
         }
+        return true;
     };
        
-    Pieza.prototype.rotarDer = function () {
+    this.rotarDer = function () {
         var formaNova = new Array();
         for (var i=0;i<this.forma.length;i++) {
             formaNova[i]=new Array();
@@ -250,7 +302,7 @@ var Pieza = function(forma, color, x, y) {
         this.forma = formaNova;
     };
     
-    Pieza.prototype.rotarIzq = function () {
+    this.rotarIzq = function () {
         for (var x=0;x<3;x++) {
             var formaNova = new Array();
             for (var i=0;i<this.forma.length;i++) {
@@ -263,8 +315,10 @@ var Pieza = function(forma, color, x, y) {
         }
     };
     
-    Pieza.prototype.formaIni = function () {
+    this.formaIni = function () {
         
     };
+    
+};
 
 
