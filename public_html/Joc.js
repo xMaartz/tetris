@@ -56,7 +56,7 @@ var juego = {
             juego.contPieza["s"] = 0;
             juego.contPieza["t"] = 0;
             juego.contPieza["z"] = 0;
-        juego.intervalo = 500;
+        juego.intervalo = 1000;
         
         
     },
@@ -117,12 +117,26 @@ var juego = {
             
         // Si no puede bajar más    
         } else {
+            
+            // para los contadores de piezas
+            switch (juego.piezaActual.color) {
+                case "lila": {juego.contPieza["i"]++;} break;
+                case "taronga": {juego.contPieza["j"]++;} break;
+                case "blau": {juego.contPieza["l"]++;} break;
+                case "groc": {juego.contPieza["o"]++;} break;
+                case "verd": {juego.contPieza["s"]++;} break;
+                case "morat": {juego.contPieza["t"]++;} break;
+                case "roig": {juego.contPieza["z"]++;} break;
+            }
+            
+            // cambia a la pieza siguiente y crea una nueva siguiente
             juego.piezaActual = juego.piezaSig;
             var formaN = juego.generaPieza();
             juego.piezaSig = new Pieza(formaN[0],formaN[1],3,1);
             
-            juego.filas();
+            // juego.filas();
             
+            // vuelco el contenido del espacio al espacio2 y cambio las "x" de la pieza que cae por 1
             for (var i = 0; i < juego.espacio.length; i++) {
                 for (var j = 0; j < juego.espacio[i].length; j++) {
 
@@ -141,10 +155,16 @@ var juego = {
                             }
             }
             
+            // cambio de niveles y puntuación
             juego.contador++;
+            juego.puntuacion += 10;
             
             if (juego.contador % 10 === 0) {
                 juego.nivel++;
+                juego.puntuacion += 20;
+                if (juego.intervalo > 300) {
+                    inter = setInterval(juego.imprimirEspacio, juego.intervalo - 100);
+                }
             }
             
         }
@@ -173,7 +193,7 @@ var juego = {
             }
         }
         
-        document.getElementById("piezaSig").innerHTML = piezaSig;
+        document.getElementById("piezaSig").innerHTML = piezaSig+"   Contador de piezas: I:"+juego.contPieza["i"]+" J:"+juego.contPieza["j"]+" L:"+juego.contPieza["l"]+" O:"+juego.contPieza["o"]+" S:"+juego.contPieza["s"]+" T:"+juego.contPieza["t"]+" Z:"+juego.contPieza["z"];
 
     },
     
@@ -209,6 +229,7 @@ var juego = {
             case "ArrowDown": {
                     if (juego.piezaActual.movAbj() === true) {
                         juego.piezaActual.y++;
+                        juego.puntuacion++;
                     }
             } break;
         } 
@@ -222,8 +243,9 @@ var juego = {
     
     filas: function () {
         var cont = 0;
-        for (var i = 0; i < juego.espacio.length-2; i++) {
-            for (var j = 0; j < juego.espacio[i].length; j++) {
+        var fin = false;
+        for (var i = 23; fin === false; i--) {
+            for (var j = 0; j < 10; j++) {
                 if (juego.espacio[i][j] === 1) {
                     cont++;
                 }
@@ -231,12 +253,15 @@ var juego = {
             
             if (cont === 10) {
                 for (var p = i; p > 0; p--) {
-                    for (var r = 0; r < 9; r++) {
+                    for (var r = 0; r < 10; r++) {
                         juego.espacio[p][r] = juego.espacio[p-1][r];
                     }
                 }
                 i++;
+            } else if (cont === 2) {
+                fin = true;
             }
+            cont = 0;
         }
     }
     
